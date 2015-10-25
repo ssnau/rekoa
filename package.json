@@ -1,7 +1,7 @@
 {
   "name": "rekoa",
   "version": "1.0.1",
-  "description": "",
+  "description": "a simple web framework based on koa.",
   "main": "index.js",
   "engines": {
     "node": ">=0.12.0"
@@ -20,6 +20,19 @@
     "glob": "^5.0.15",
     "koa": "^1.1.1",
     "koa-router": "^5.2.3",
-    "lodash": "^3.10.1"
-  }
+    "lodash": "^3.10.1",
+    "fsevents": "^1.0.2"
+  },
+  "directories": {
+    "example": "example"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssnau/rekoa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ssnau/rekoa/issues"
+  },
+  "homepage": "https://github.com/ssnau/rekoa#readme"
 }
