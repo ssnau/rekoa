@@ -46,7 +46,6 @@ module.exports = {
       var rfp = path.relative(p, _p);
 
       if(/\/_/.test(rfp)) return; // ignore files start with _
-      if (!/(js|jsx|es6|coffee)$/.test(_p)) return; // only deal with known extensions
 
       try {
         callback.apply(this, [].slice.call(arguments));
