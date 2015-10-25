@@ -26,7 +26,10 @@
   "directories": {
     "example": "example"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "fs-promise": "^0.3.1",
+    "handlebars": "^4.0.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ssnau/rekoa.git"

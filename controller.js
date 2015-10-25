@@ -8,6 +8,9 @@ var compose = require("composition");
 var _ = require("lodash");
 
 module.exports = function (app, extra) {
+  var extname = extra.templateExtension || ".html";
+  if (extname[0] !== ".") extname = "." + extname;
+
   var routes = null;
   function getPages(files) {
     var pages = {};
@@ -40,12 +43,12 @@ module.exports = function (app, extra) {
 
         if (typeof p.url === 'string') {
           var template = path.join(templateBase,  p.url.replace(/:/g, '').replace(/\*.*/g, ''));
-          template = path.join(template, "index.jsx"); 
+          template = path.join(template, "index" + extname); 
         }
 
         if (p.templateName) {
           var template = path.join(templateBase, p.templateName);
-          template = path.join(template, "index.jsx"); 
+          template = path.join(template, "index" + extname); 
         }
 
         var templateExist = fs.existsSync(template)
@@ -92,7 +95,7 @@ module.exports = function (app, extra) {
     try {
       yield routes.call(this, next);
     } catch (e) {
-      app.emit("error", e);
+      console.error("\n========\n", e.stack, "\n=========\n");
       this.status = 500;
       this.error = e;
       yield next;
@@ -101,8 +104,6 @@ module.exports = function (app, extra) {
 
 function routeController(app, page) {
 
-  var extname = extra.templateExtension || ".html";
-  if (extname[0] !== ".") extname = "." + extname;
 
   var middlewares = page.middlewares || [];
 
@@ -147,8 +148,6 @@ function routeController(app, page) {
       }
 
       this.body = body;
-
-      yield app.fire("renderEnd", this);
     }
 
     // mark for GC

@@ -13,7 +13,7 @@ module.exports = function (app, extra) {
   var middlewareOrder = util.safe(function() {
     return require(path.join(middlewarePath, '$order.json'));
   }) || [];
-  var mws = function *(next) { yield* next};
+  var mws = function *(next) { yield next};
   function initMws(files) {
     mws = compose(
       _.flatten(
@@ -32,7 +32,7 @@ module.exports = function (app, extra) {
   }
 
   app.use(function *(next) {
-    yield* mws.call(this, next);
+    yield mws.call(this, next);
   });
 
   return {

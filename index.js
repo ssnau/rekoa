@@ -13,6 +13,15 @@ module.exports = function (config) {
   }
   var recipes = [];
 
+  if (!config.path) config.path = {};
+  addRecipe(require('./middleware'), {path: config.path.middleware});
+  addRecipe(require('./context'), {path: config.path.context});
+  addRecipe(require('./controller'), {
+    path: config.path.controller,
+    templatePath: config.path.template,
+    templateExtension: config.templateExtension || '.html'
+  });
+
   function addRecipe(recipe, extra) {
     recipes.push({
       recipe: recipe,
@@ -20,16 +29,7 @@ module.exports = function (config) {
     });
   };
 
-  addRecipe(require('./middleware'), {path: config.path.middleware});
-  addRecipe(require('./context'), {path: config.path.context});
-  addRecipe(require('./controller'), {
-    path: config.path.controller
-    templatePath: config.path.template
-  });
-
-  return {
-    add: addRecipe,
-    bootstrap: function () {
+  function start() {
       console.time('loading recipes');
       // bootstrap recipes
       recipes.forEach(function(rec) {
@@ -65,9 +65,18 @@ module.exports = function (config) {
         console.timeEnd('start');
         console.log('server listening on ', port);
       });
-    },
-    util: util,
-    app: app,
-    use: function (a) { return app.use.call(app, a); }
   }
+
+  function addMethod(name, fn) {
+    app[name] = fn;
+  }
+
+  return {
+    addRecipe: addRecipe, 
+    addMethod: addMethod,
+    start: start,
+    util: util, // utilities
+    koa: app,  // get the koa instance
+    use: app.use.bind(app), // the koa `use` method
+  };
 };

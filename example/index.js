@@ -1,14 +1,27 @@
 require('babel/register');
-var app = require('../');
+var rekoa = require('../');
 var path = require('path');
+var fsp  = require('fs-promise');
+var handlebars = require('handlebars');
 
-app({
+var app = rekoa({
   isDevelopment: true,
   base: __dirname,
+  port: 8080,
+  templateExtension: '.hbs',
   path: {
     middleware: path.join(__dirname, 'middleware'),
-    controller: path.join(__dirname, 'controller')
+    controller: path.join(__dirname, 'controller'),
+    context: path.join(__dirname, 'context'),
+    template: path.join(__dirname, 'template'),
   }
-}).bootstrap();
+});
 
+app.addMethod('render', function(file, data) {
+  return fsp.readFile(file, 'utf8').then(function(template) {
+    return handlebars.compile(template)(data);
+  });
+});
+
+app.start();
 
