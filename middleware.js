@@ -5,7 +5,6 @@
 
 var util = require('./util');
 var path = require('path');
-var _ = require("lodash");
 var compose = require('composition');
 
 module.exports = function (app, extra) {
