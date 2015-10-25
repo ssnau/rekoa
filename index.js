@@ -47,11 +47,12 @@ module.exports = function (config) {
               }
               delete require.cache[path];
               console.log('reloading file ' + relbase(path) + ' for ' + recipe.name || ' unknown recipe');
-              if (recipe.fullReload) return recipe.setup(gf());
-              if (recipe.watchCallback) return recipe.watchCallback(path);
+              if (recipe.fullReload) recipe.setup(gf());
+              if (recipe.watchCallback)  recipe.watchCallback(path);
             }
           });
         };
+        if (recipe.name) console.log('recipe ' + recipe.name + ' loaded');
       });
       console.timeEnd('loading recipes');
 

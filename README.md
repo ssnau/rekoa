@@ -10,16 +10,37 @@ a simple web framework based on koa.
 ### example
 
 ```
+// index.js
 var app = require('rekoa');
 
 app({
+  isDevelopment: true,
+  base: __dirname,
   path: {
-    middleware: __dirname + "/middleware" // tell rekoa where you middleware lies
-    controller: __dirname + "/controller" // tell rekoa where you middleware lies
-    context: __dirname + "/context" // tell rekoa where you middleware lies
+    middleware: path.join(__dirname, 'middleware'),
+    controller: path.join(__dirname, 'controller')
   }
 }).bootstrap();
+
+// middleware/teapot
+module.exports = async function (next) {
+  this.name = "jack";
+  await next;
+};
+
+// controller/greet.js
+
+module.exports = [
+  {
+    url: '/greet',
+    controller: async function () {
+      this.body = "hello, i am " + this.name;
+    }
+  }
+];
 ```
+
+visit `http://localhost:8080/` you will get `hello, i am jack` and change middleware or controller file and save, you will get a new result without server restart.
 
 ### license
 

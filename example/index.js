@@ -6,7 +6,8 @@ app({
   isDevelopment: true,
   base: __dirname,
   path: {
-    middleware: path.join(__dirname, 'middleware')
+    middleware: path.join(__dirname, 'middleware'),
+    controller: path.join(__dirname, 'controller')
   }
 }).bootstrap();
 

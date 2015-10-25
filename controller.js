@@ -12,19 +12,9 @@ module.exports = function (app, extra) {
   function getPages(files) {
     var pages = {};
     files.forEach(function (file) {
-      var templateBase = extra.template;
+      var templateBase = extra.template || extra.path;
 
       const absfile = require.resolve(file);
-      /*
-      if (app.config.serverHMR && require.cache[absfile] && changedPaths.indexOf(absfile) > -1) {
-        console.log('reloading ', absfile);
-        if (!util.checkSyntax(absfile)) {
-          delete require.cache[absfile];
-        } else {
-          console.log('syntax error', util.checkSyntax(absfile))
-        }
-      }
-      */
       var page = require(file);
 
       if (typeof page === 'function') {
@@ -35,7 +25,7 @@ module.exports = function (app, extra) {
       if (!Array.isArray(page)) page = [page];
 
       page.forEach(function (p, i) {
-        var name = path.relative(app.config.path.controller, file);
+        var name = path.relative(extra.path, file);
         // so that base itself becomes "/"
         name = "/" + name;
 
@@ -58,7 +48,7 @@ module.exports = function (app, extra) {
           template = path.join(template, "index.jsx"); 
         }
 
-        templateExist = fs.existsSync(template)
+        var templateExist = fs.existsSync(template)
 
         pages[name + key] = {
           url: p.url,
@@ -77,7 +67,7 @@ module.exports = function (app, extra) {
   }
   function getRoutes(files) {
     // boot on startup
-    var pages = getPages();
+    var pages = getPages(files);
     // route pages
 
     var router = require("koa-router")();
@@ -86,7 +76,7 @@ module.exports = function (app, extra) {
       var page = pages[name];
       if (!(page && page.controller)) return;
 
-      var responseController = routeController(app, page, debug);
+      var responseController = routeController(app, page);
       page.method.forEach(function (method) {
         [].concat(page.url).forEach(function(url) {
           router[method](url, responseController);
@@ -109,17 +99,9 @@ module.exports = function (app, extra) {
     }
   });
 
-  return {
-    filter: /js$/,
-    setup: getRoutes,
-    fullReload: true,
-    name: 'controller'
-  };
-};
+function routeController(app, page) {
 
-function routeController(app, page, debug) {
-
-  var extname = app.config.templateExtension || ".html";
+  var extname = extra.templateExtension || ".html";
   if (extname[0] !== ".") extname = "." + extname;
 
   var middlewares = page.middlewares || [];
@@ -174,3 +156,12 @@ function routeController(app, page, debug) {
 
   };
 }
+
+  return {
+    filter: /js$/,
+    setup: getRoutes,
+    fullReload: true,
+    name: 'controller'
+  };
+};
+

@@ -1,4 +1,4 @@
 module.exports = async function (next) {
-  this.body = 'this is a teapot900';
+  this.name = "jack";
   await next;
 };
