@@ -2,7 +2,7 @@ module.exports = [
   {
     url: '/greet',
     controller: async function () {
-      this.jsonx({
+      this.json({
         message: "hello, i am " + this.name
       });
     }
