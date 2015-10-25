@@ -22,7 +22,10 @@ module.exports = function (config) {
 
   addRecipe(require('./middleware'), {path: config.path.middleware});
   addRecipe(require('./context'), {path: config.path.context});
-  addRecipe(require('./controller'), {path: config.path.controller});
+  addRecipe(require('./controller'), {
+    path: config.path.controller
+    templatePath: config.path.template
+  });
 
   return {
     add: addRecipe,
@@ -64,6 +67,7 @@ module.exports = function (config) {
       });
     },
     util: util,
-    app: app
+    app: app,
+    use: function (a) { return app.use.call(app, a); }
   }
 };

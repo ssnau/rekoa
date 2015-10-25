@@ -12,7 +12,7 @@ module.exports = function (app, extra) {
   function getPages(files) {
     var pages = {};
     files.forEach(function (file) {
-      var templateBase = extra.template || extra.path;
+      var templateBase = extra.templatePath || extra.path;
 
       const absfile = require.resolve(file);
       var page = require(file);
