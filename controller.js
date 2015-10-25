@@ -5,6 +5,7 @@ var glob = require("glob");
 var path = require("path");
 var fs = require("fs");
 var compose = require("composition");
+var _ = require('lodash');
 
 module.exports = function (app, extra) {
   var extname = extra.templateExtension || ".html";
