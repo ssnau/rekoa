@@ -100,12 +100,12 @@ module.exports = function (app, extra) {
 
   app.use(function * (next) {
     try {
-      yield* routes.call(this, next);
+      yield routes.call(this, next);
     } catch (e) {
       app.emit("error", e);
       this.status = 500;
       this.error = e;
-      yield* next;
+      yield next;
     }
   });
 
@@ -134,7 +134,7 @@ function routeController(app, page, debug) {
   function* responseController(next) {
     this.matchingRoute = page.name;
 
-    var scope = yield page.controller.call(this, this.datasource);
+    var scope = yield page.controller.call(this);
 
     if (scope) {
       this.scope = scope;
@@ -154,7 +154,7 @@ function routeController(app, page, debug) {
 
       var body;
       try {
-        body = yield * app.render(tpl, scope);
+        body = yield app.render(tpl, scope);
       } catch (e) {
         body = "Internal Server Error";
         this.status = 500;
