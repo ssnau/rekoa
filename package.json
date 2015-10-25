@@ -1,0 +1,23 @@
+{
+  "name": "rekoa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^5.8.29",
+    "composition": "^2.2.1",
+    "fsevents": "^1.0.2",
+    "glob": "^5.0.15",
+    "koa": "^1.1.1",
+    "koa-router": "^5.2.3",
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "babel": "^5.8.29"
+  }
+}
