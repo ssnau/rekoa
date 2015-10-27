@@ -20,7 +20,7 @@ app({
     middleware: path.join(__dirname, 'middleware'),
     controller: path.join(__dirname, 'controller')
   }
-}).bootstrap();
+}).start();
 
 // middleware/teapot
 module.exports = async function (next) {
@@ -41,6 +41,8 @@ module.exports = [
 ```
 
 visit `http://localhost:8080/` you will get `hello, i am jack` and change middleware or controller file and save, you will get a new result without server restart.
+
+A more featured example is under `example` folder.
 
 ### license
 
