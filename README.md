@@ -11,6 +11,7 @@ a simple web framework based on koa.
 
 ```
 // index.js
+require('babel/register'); // use babel to transform es7 async/await
 var app = require('rekoa');
 
 app({
