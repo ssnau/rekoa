@@ -47,27 +47,20 @@ module.exports = function (app, extra) {
   }
 
   app.use(function * (next) {
-    try {
-      var match = router.match(this.path);
-      var controller = match && match.node && match.node.controller;
-      if (!controller) {
-        this.body = 'no route found';
-        return;
-      }
-      var methods = controller.methods;
-      if (methods.indexOf(this.method) === -1) {
-        this.body = 'no supported method found';
-        return;
-      }
-      this.matchRoute = match.node;
-      this.params = match.param;
-      yield controller.fn.call(this, next);
-      console.log('this.body is', this.body);
-    } catch (e) {
-      console.error("\n========\n", e.stack, "\n=========\n");
-      this.status = 500;
-      this.error = e;
+    var match = router.match(this.path);
+    var controller = match && match.node && match.node.controller;
+    if (!controller) {
+      this.body = 'no route found';
+      return;
     }
+    var methods = controller.methods;
+    if (methods.indexOf(this.method) === -1) {
+      this.body = 'no supported method found';
+      return;
+    }
+    this.matchRoute = match.node;
+    this.params = match.param;
+    yield controller.fn.call(this, next);
   });
 
   function routeController(app, page) {
