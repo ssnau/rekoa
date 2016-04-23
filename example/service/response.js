@@ -1,5 +1,7 @@
 var path = require('path');
 var   fs = require('fs');
+var handlebars = require('handlebars');
+
 var cache = {};
 module.exports = function (context) {
   var config = context.config;
@@ -7,12 +9,13 @@ module.exports = function (context) {
     render: function _render(data, tpl) {
       var p = path.join(config.templateBase, tpl);
       if (config.isDebug) cache = {};
-      var template;
-      if (cache[p]) {
-        template = cache[p] || fs.readFileSync(p, 'utf8');
+      var template = cache[p];
+      if (!template) {
+        var tsrc = cache[p] || fs.readFileSync(p, 'utf8');
+        template = handlebars.compile(tsrc);
         cache[p] = template;
       }
-      this.body = 'xxx' + handlebars.compile(template)(data);
+      context.body = template(data);
     },
     json(data) {
       context.type = 'application/json';

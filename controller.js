@@ -48,6 +48,7 @@ module.exports = function (app, extra) {
 
   app.use(function * (next) {
     var match = router.match(this.path);
+    console.log('the match for ' + this.path + ' is: ' + this.path);
     var controller = match && match.node && match.node.controller;
     if (!controller) {
       this.body = 'no route found';

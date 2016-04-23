@@ -12,6 +12,11 @@ module.exports = function (config) {
   }
   var recipes = [];
 
+  app.use(function *(next) {
+    this.config = config;
+    yield next;
+  });
+
   if (!config.path) config.path = {};
   addRecipe(require('./service'), {path: config.path.service});
   addRecipe(require('./middleware'), {path: config.path.middleware});

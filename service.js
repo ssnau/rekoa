@@ -5,7 +5,6 @@ var util = require('./util');
 // Service setup!
 module.exports = function (app, extra) {
   var servicePath = extra.path;
-  console.log('run into here..');
   // Data Injection setup!
   app.use(function* (next) {
     var _this = this;
