@@ -6,7 +6,6 @@
 var util = require('./util');
 var path = require('path');
 var compose = require('composition');
-var _ = require('lodash');
 
 module.exports = function (app, extra) {
   var middlewarePath = extra.path;

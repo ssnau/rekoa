@@ -1,5 +1,4 @@
 var koa = require('koa');
-var glob = require('glob');
 var util = require('./util');
 var path = require('path');
 
@@ -14,13 +13,9 @@ module.exports = function (config) {
   var recipes = [];
 
   if (!config.path) config.path = {};
+  addRecipe(require('./service'), {path: config.path.service});
   addRecipe(require('./middleware'), {path: config.path.middleware});
-  addRecipe(require('./context'), {path: config.path.context});
-  addRecipe(require('./controller'), {
-    path: config.path.controller,
-    templatePath: config.path.template,
-    templateExtension: config.templateExtension || '.html'
-  });
+  addRecipe(require('./controller'), {path: config.path.controller});
 
   function addRecipe(recipe, extra) {
     recipes.push({

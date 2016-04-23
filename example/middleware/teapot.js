@@ -1,4 +1,4 @@
-module.exports = async function (next) {
+module.exports = function* (next) {
   this.name = "jack";
-  await next;
+  yield next;
 };

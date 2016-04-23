@@ -1,17 +1,19 @@
-var glob = require('glob');
 var fs = require('fs');
 var path = require('path');
 
 module.exports = {
-  getFilesFromDir: function (dir) {
-    return glob.sync(dir + "/*").filter(function(f) {
-      var rfp = path.relative(dir, f);
-
-      if(/\/_/.test(rfp)) return false;
-
-      return true;
-    });
+  getFilesFromDir: function readDir(dir) {
+    return fs
+      .readdirSync(dir)
+      .reduce(function (acc, file) {
+        var files = [path.join(dir, file)];
+        if (fs.statSync(files[0]).isDirectory()) {
+          files = readDir(absfile);
+        }
+        return acc.concat(files);
+    }, []);
   },
+  checkSyntax: () => true,
   safe: function (fn) {
     try {
       return fn();
@@ -22,15 +24,6 @@ module.exports = {
   filename: function (p) {
     return p.replace(/\.[^/.]+$/, "").replace(/^.*\//, '');
   },
-  checkSyntax: function (file) {
-    try {
-      var babel = require('babel');
-      babel.transform(fs.readFileSync(file, 'utf-8'), {stage: 0});
-      return false;
-    } catch (e) {
-      return e;
-    }
-  },
   predefinedSort: function (array, order) {
     return order
       .filter(function(x) { return array.indexOf(x) > -1 })
@@ -39,14 +32,11 @@ module.exports = {
     );
   },
   watch: function (p, callback) {
-    var fsevents = require('fsevents');
-    var watcher = fsevents(p);
-    watcher.start(); // To start observation
-    watcher.on('change', function(_p) {
+    var fs = require('fs');
+    var watcher = fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
       var rfp = path.relative(p, _p);
 
       if(/\/_/.test(rfp)) return; // ignore files start with _
-
       try {
         callback.apply(this, [].slice.call(arguments));
       } catch (e) {

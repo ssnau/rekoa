@@ -15,12 +15,9 @@
     "fsevents": "^1.0.2"
   },
   "dependencies": {
-    "babel": "^5.8.29",
     "composition": "^2.2.1",
-    "glob": "^5.0.15",
     "koa": "^1.1.1",
-    "koa-router": "^5.2.3",
-    "lodash": "^3.10.1"
+    "routington": "^1.0.3"
   },
   "directories": {
     "example": "example"
