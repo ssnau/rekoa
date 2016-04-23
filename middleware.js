@@ -16,8 +16,12 @@ function flatten(array) {
 module.exports = function (app, extra) {
   var middlewarePath = extra.path;
   var middlewareOrder = util.safe(function() {
-    return require(path.join(middlewarePath, '$order.json'));
+    return require(path.join(middlewarePath, '_order.js'));
   }) || [];
+  var middlewareOrder = util.safe(function() {
+    return require(path.join(middlewarePath, '$order.js'));
+  }) || [];
+
   var mws = function *(next) { yield next};
   function initMws(files) {
     mws = compose(
