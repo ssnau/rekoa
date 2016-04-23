@@ -1,9 +1,15 @@
-module.exports = function (context) {
+var cache = {};
+module.exports = function (context, app) {
   return {
-    render(data, tpl) {
-      return fsp.readFile(file, 'utf8').then(function(template) {
-        return handlebars.compile(template)(data);
-      });
+    render: function _render(data, tpl) {
+      var p = path.join(context.templateBase, tpl);
+      if (app.config.isDebug) cache = {};
+      var template;
+      if (cache[p]) {
+        template = cache[p] || fs.readFileSync(p, 'utf8');
+        cache[p] = template;
+      }
+      return handlebars.compile(template)(data);
     },
     json(data) {
       context.type = 'application/json';

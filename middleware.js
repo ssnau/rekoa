@@ -7,6 +7,12 @@ var util = require('./util');
 var path = require('path');
 var compose = require('composition');
 
+function flatten(array) {
+   return array.reduce((acc, arr) => {
+     return acc.concat(Array.isArray(arr) ? flatten(arr) : arr);
+   }, []);
+}
+
 module.exports = function (app, extra) {
   var middlewarePath = extra.path;
   var middlewareOrder = util.safe(function() {
@@ -15,7 +21,7 @@ module.exports = function (app, extra) {
   var mws = function *(next) { yield next};
   function initMws(files) {
     mws = compose(
-      _.flatten(
+      flatten(
       util.predefinedSort(
           files.map(function(name) {
             return util.filename(name);
