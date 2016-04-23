@@ -7,6 +7,7 @@ var app = rekoa({
   isDevelopment: true,
   base: __dirname,
   port: 8080,
+  templateBase: path.join(__dirname, 'template'),
   path: {
     service: path.join(__dirname, 'service'),
     middleware: path.join(__dirname, 'middleware'),

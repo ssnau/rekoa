@@ -9,7 +9,7 @@ module.exports = [
   },
   {
     url: '/greet/cat',
-    controller: function *() {
+    controller: function *(response) {
       yield response.render({name: 'john'})
     }
   }

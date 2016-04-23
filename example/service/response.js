@@ -1,15 +1,18 @@
+var path = require('path');
+var   fs = require('fs');
 var cache = {};
-module.exports = function (context, app) {
+module.exports = function (context) {
+  var config = context.config;
   return {
     render: function _render(data, tpl) {
-      var p = path.join(context.templateBase, tpl);
-      if (app.config.isDebug) cache = {};
+      var p = path.join(config.templateBase, tpl);
+      if (config.isDebug) cache = {};
       var template;
       if (cache[p]) {
         template = cache[p] || fs.readFileSync(p, 'utf8');
         cache[p] = template;
       }
-      return handlebars.compile(template)(data);
+      this.body = 'xxx' + handlebars.compile(template)(data);
     },
     json(data) {
       context.type = 'application/json';
