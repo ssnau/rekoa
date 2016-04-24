@@ -11,9 +11,6 @@
   },
   "author": "",
   "license": "ISC",
-  "optionalDependencies": {
-    "fsevents": "^1.0.2"
-  },
   "dependencies": {
     "composition": "^2.2.1",
     "koa": "^1.1.1",
