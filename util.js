@@ -34,11 +34,10 @@ module.exports = {
   watch: function (p, callback) {
     var fs = require('fs');
     var watcher = fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
-      var rfp = path.relative(p, _p);
-
-      if(/\/_/.test(rfp)) return; // ignore files start with _
+      var f = path.join(p, filename);
+      if (/\/_/.test(f)) return; // ignore files start with _
       try {
-        callback.apply(this, [].slice.call(arguments));
+        callback.apply(this, [].concat(f));
       } catch (e) {
         console.log('watcher got error', e.stack);
       }
