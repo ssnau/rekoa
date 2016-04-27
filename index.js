@@ -42,16 +42,15 @@ module.exports = function (config) {
         var watch = recipe.fullReload || recipe.watchCallback;
         if (watch && config.isDevelopment) {
           util.watch(rec.extra.path, function(path) {
-            if (filter.test(path)) {
-              if (!util.checkSyntax(path)) {
+            try {
+              if (filter.test(path)) {
                 delete require.cache[path];
-              } else {
-                return console.error('syntax error', util.checkSyntax(path))
+                console.log('reloading file ' + relbase(path) + ' for ' + recipe.name || ' unknown recipe');
+                if (recipe.fullReload) recipe.setup(gf());
+                if (recipe.watchCallback)  recipe.watchCallback(path);
               }
-              delete require.cache[path];
-              console.log('reloading file ' + relbase(path) + ' for ' + recipe.name || ' unknown recipe');
-              if (recipe.fullReload) recipe.setup(gf());
-              if (recipe.watchCallback)  recipe.watchCallback(path);
+            } catch (e) {
+              // do nothing
             }
           });
         };
@@ -72,7 +71,7 @@ module.exports = function (config) {
   }
 
   return {
-    addRecipe: addRecipe, 
+    addRecipe: addRecipe,
     addMethod: addMethod,
     start: start,
     util: util, // utilities

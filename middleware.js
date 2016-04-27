@@ -15,29 +15,40 @@ function flatten(array) {
 
 module.exports = function (app, extra) {
   var middlewarePath = extra.path;
-  var middlewareOrder = util.safe(function() {
-    return require(path.join(middlewarePath, '_order.js'));
-  }) || [];
-  var middlewareOrder = util.safe(function() {
-    return require(path.join(middlewarePath, '$order.js'));
-  }) || [];
+
+  function getOrder() {
+    var c1, c2;
+    util.safe(() => c1 = require(path.join(middlewarePath, '_order.js')));
+    util.safe(() => c2 = require(path.join(middlewarePath, '$order.js')));
+    return c1 || c2 || [];
+  }
 
   var mws = function *(next) { yield next};
   function initMws(files) {
-    mws = compose(
-      flatten(
-      util.predefinedSort(
-          files.map(function(name) {
-            return util.filename(name);
-          }),
-        middlewareOrder
-      )
-        .map(function(name) {
-          return require(path.join(middlewarePath, name));
-        })
-        .filter(Boolean)
-      )
-    );
+    var middlewareOrder = getOrder() || [];
+    console.log('order is', middlewareOrder);
+
+    // read dir
+    var wears = files.filter(function (x) {
+      return (/js$/.test(x));
+    }).map(function (name) {
+      return util.filename(name);
+    }).filter(Boolean).filter(function (name) {
+      return name.indexOf('$order') === -1 && name.indexOf('_order') === -1;
+    });
+
+    // sort in order and require them
+    wears = middlewareOrder.filter(x => wears.indexOf(x) > -1);
+
+    console.log('loading middlewares:', wears.join(', '));
+
+    wears = wears.map(function (name) {
+      return require(path.join(middlewarePath, name));
+    }).filter(Boolean);
+
+    // flat and filter
+    wears = flatten(wears).filter(Boolean);
+    mws = compose(wears);
   }
 
   app.use(function *(next) {
