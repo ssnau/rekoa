@@ -37,6 +37,7 @@ module.exports = {
   },
   watch: function (p, callback) {
     var fs = require('fs');
+    if (!fs.existsSync(p)) return;
     var watcher = fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
       var f = path.join(p, filename);
       if (/\/_/.test(f)) return; // ignore files start with _
