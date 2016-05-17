@@ -3,15 +3,19 @@ var path = require('path');
 
 module.exports = {
   getFilesFromDir: function readDir(dir) {
-    return fs
-      .readdirSync(dir)
-      .reduce(function (acc, file) {
-        var files = [path.join(dir, file)];
-        if (fs.statSync(files[0]).isDirectory()) {
-          files = readDir(absfile);
-        }
-        return acc.concat(files);
-    }, []);
+    try {
+      return fs
+        .readdirSync(dir)
+        .reduce(function (acc, file) {
+          var files = [path.join(dir, file)];
+          if (fs.statSync(files[0]).isDirectory()) {
+            files = readDir(absfile);
+          }
+          return acc.concat(files);
+      }, []);
+    } catch (e) {
+      return [];
+    }
   },
   checkSyntax: () => true,
   safe: function (fn) {
