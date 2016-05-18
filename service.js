@@ -15,6 +15,9 @@ module.exports = function (app, extra) {
 
     injector.register('context', this);
     injector.register('app', this.app);
+    if (this.pendingInjections) {
+      this.pendingInjections.forEach(fn => fn(injector));
+    }
 
     yield next;
     this.$injector = null; // gc
