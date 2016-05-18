@@ -10,7 +10,7 @@ module.exports = function (app, extra) {
   function loadRoute(files) {
     router = require("routington")();
     // boot on startup
-    var pages = {};
+    var pages = [];
     files.forEach(function (file) {
       const absfile = require.resolve(file);
       var page = require(file);
@@ -20,43 +20,48 @@ module.exports = function (app, extra) {
       if (!Array.isArray(page)) page = [page];
 
       page.forEach(function (p, i) {
-        pages[p.url] = {
+        pages.push({
           url: p.url,
           controller: p.controller,
           method: [].concat(p.method || p.methods || "get").map(x => x.toUpperCase())
-        };
+        });
       });
     });
     app.pages = pages;
 
     // route pages
-    Object.keys(pages || {}).forEach(function (name) {
-      var page = pages[name];
+    pages.forEach(function (page) {
       if (!(page && page.controller)) return;
 
       var responseController = routeController(app, page);
       var url = page.url.indexOf('/') !== '0' ? '/' + url: '';
       router.define(page.url).forEach(node => {
-        node.controller = {
+        node.controllers = [].concat(node.controllers).concat([{
           method: page.method,
           methods: page.method,
           fn: responseController
-        };
+        }]).filter(Boolean);
       });
     });
   }
 
   app.use(function * (next) {
     var match = router.match(this.path);
-    console.log('the match for ' + this.path + ' is: ' + this.path);
-    var controller = match && match.node && match.node.controller;
-    if (!controller) {
+    var controllers = match && match.node && match.node.controllers;
+    if (!controllers) {
       this.body = 'no route found';
       return;
     }
-    var methods = controller.methods;
-    if (methods.indexOf(this.method) === -1) {
-      this.body = 'no supported method found';
+    var controller;
+    for (var i = 0; i < controllers.length; i++) {
+      var methods = controllers[i].methods;
+      if (methods.indexOf(this.method) > -1) {
+        controller = controllers[i];
+        break;
+      }
+    }
+    if (!controller) {
+      this.body = 'no supported controller found';
       return;
     }
     this.matchRoute = match.node;
