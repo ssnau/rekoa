@@ -3,15 +3,19 @@ var path = require('path');
 
 module.exports = {
   getFilesFromDir: function readDir(dir) {
-    return fs
-      .readdirSync(dir)
-      .reduce(function (acc, file) {
-        var files = [path.join(dir, file)];
-        if (fs.statSync(files[0]).isDirectory()) {
-          files = readDir(absfile);
-        }
-        return acc.concat(files);
-    }, []);
+    try {
+      return fs
+        .readdirSync(dir)
+        .reduce(function (acc, file) {
+          var files = [path.join(dir, file)];
+          if (fs.statSync(files[0]).isDirectory()) {
+            files = readDir(absfile);
+          }
+          return acc.concat(files);
+      }, []);
+    } catch (e) {
+      return [];
+    }
   },
   checkSyntax: () => true,
   safe: function (fn) {
@@ -33,12 +37,12 @@ module.exports = {
   },
   watch: function (p, callback) {
     var fs = require('fs');
+    if (!fs.existsSync(p)) return;
     var watcher = fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
-      var rfp = path.relative(p, _p);
-
-      if(/\/_/.test(rfp)) return; // ignore files start with _
+      var f = path.join(p, filename);
+      if (/\/_/.test(f)) return; // ignore files start with _
       try {
-        callback.apply(this, [].slice.call(arguments));
+        callback.apply(this, [].concat(f));
       } catch (e) {
         console.log('watcher got error', e.stack);
       }

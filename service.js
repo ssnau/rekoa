@@ -15,6 +15,9 @@ module.exports = function (app, extra) {
 
     injector.register('context', this);
     injector.register('app', this.app);
+    if (this.pendingInjections) {
+      this.pendingInjections.forEach(fn => fn(injector));
+    }
 
     yield next;
     this.$injector = null; // gc
@@ -34,11 +37,9 @@ module.exports = function (app, extra) {
   app.use(function* (next) {
     var _this = this;
 
-    if (this.$injector) {
-      Object.keys(app.service).forEach(function (key) {
-        return _this.$injector.register(key, app.service[key]);
-      });
-    }
+    Object.keys(app.service).forEach(function (key) {
+      return _this.$injector.register(key, app.service[key]);
+    });
     yield next;
   });
 
