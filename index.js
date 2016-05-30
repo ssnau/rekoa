@@ -11,6 +11,7 @@ module.exports = function (config) {
     return base ? path.relative(base, p) : p;
   }
   var recipes = [];
+  var middlewares = [];
 
   app.use(function *(next) {
     this.config = config;
@@ -20,6 +21,7 @@ module.exports = function (config) {
   if (!config.path) config.path = {};
   addRecipe(require('./service'), {path: config.path.service});
   addRecipe(require('./middleware'), {path: config.path.middleware});
+  middlewares.forEach(fn => app.use(fn));
   addRecipe(require('./controller'), {path: config.path.controller});
 
   function addRecipe(recipe, extra) {
@@ -73,6 +75,7 @@ module.exports = function (config) {
   return {
     addRecipe: addRecipe,
     addMethod: addMethod,
+    addMiddleware: (fn) => middlewares.push(fn),
     start: start,
     util: util, // utilities
     koa: app,  // get the koa instance
