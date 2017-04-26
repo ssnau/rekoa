@@ -50,6 +50,7 @@ module.exports = function (app, extra) {
     var controllers = match && match.node && match.node.controllers;
     if (!controllers) {
       this.body = 'no route found';
+      this.status = 404;
       return;
     }
     var controller;
@@ -62,6 +63,7 @@ module.exports = function (app, extra) {
     }
     if (!controller) {
       this.body = 'no supported controller found';
+      this.status = 404;
       return;
     }
     this.matchRoute = match.node;
