@@ -9,7 +9,7 @@ module.exports = {
         .reduce(function (acc, file) {
           var files = [path.join(dir, file)];
           if (fs.statSync(files[0]).isDirectory()) {
-            files = readDir(absfile);
+            files = readDir(path.resolve(dir, file));
           }
           return acc.concat(files);
       }, []);
