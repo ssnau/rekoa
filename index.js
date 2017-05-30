@@ -37,7 +37,7 @@ module.exports = function (config) {
             if (recipe.watchCallback)  recipe.watchCallback(path);
           }
         } catch (e) {
-          // do nothing
+          console.log(e);
         }
       });
     };
