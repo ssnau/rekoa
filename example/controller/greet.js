@@ -9,9 +9,9 @@ module.exports = [
   },
   {
     url: '/greet',
-    controller: function* (response) {
+    controller: function* (response, dumb, Dumb) {
       response.json({
-        message: "hello, i am " + this.name
+        message: "hello, i am " + dumb.getName() + '$$' + Dumb.getName()
       });
     }
   },

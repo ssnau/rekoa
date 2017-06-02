@@ -47,7 +47,7 @@ module.exports = function (config) {
   function start() {
       console.time('loading recipes');
       // bootstrap recipes
-      processRecipe(require('./service'), {path: config.path.service});
+      processRecipe(require('./service'), {path: config.path.service, lowerCasify: config.serviceLowerCasify});
       processRecipe(require('./middleware'), {path: config.path.middleware});
       middlewares.forEach(fn => app.use(fn));
       processRecipe(require('./controller'), {path: config.path.controller});

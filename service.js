@@ -31,7 +31,11 @@ module.exports = function (app, extra) {
     var Service = require(file);
     if (!Service) return;
 
-    app.service[util.filename(file)] = Service;
+    const name = util.filename(file);
+    app.service[name] = Service;
+    if (lcfirst(name) !== name && extra.lowerCasify) {
+      app.service[lcfirst(name)] = Service;
+    }
   }
 
   app.use(function* (next) {
@@ -58,3 +62,14 @@ module.exports = function (app, extra) {
     name: 'service'
   };
 };
+function lcfirst (str) {
+  //  discuss at: http://locutus.io/php/lcfirst/
+  // original by: Brett Zamir (http://brett-zamir.me)
+  //   example 1: lcfirst('Kevin Van Zonneveld')
+  //   returns 1: 'kevin Van Zonneveld'
+  str += ''
+  var f = str.charAt(0)
+    .toLowerCase()
+  return f + str.substr(1)
+}
+
