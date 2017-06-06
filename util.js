@@ -1,21 +1,14 @@
 var fs = require('fs');
 var path = require('path');
+var readdir = require('xkit/fs/readdir');
 
 module.exports = {
   getFilesFromDir: function readDir(dir) {
-    try {
-      return fs
-        .readdirSync(dir)
-        .reduce(function (acc, file) {
-          var files = [path.join(dir, file)];
-          if (fs.statSync(files[0]).isDirectory()) {
-            files = readDir(path.resolve(dir, file));
-          }
-          return acc.concat(files);
-      }, []);
-    } catch (e) {
-      return [];
-    }
+    var files = readdir(dir);
+    return files.filter(x => {
+      if (x.indexOf('/_') > -1) return false;
+      return /\.js/.test(x); 
+    });
   },
   checkSyntax: () => true,
   safe: function (fn) {

@@ -48,6 +48,7 @@ module.exports = function (app, extra) {
   });
 
   util.getFilesFromDir(servicePath).filter(function (x) {
+    if (/spec.js/.test(x)) return false;
     return (/js$/.test(x));
   }).forEach(loadService);
 

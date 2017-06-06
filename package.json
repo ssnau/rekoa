@@ -15,7 +15,8 @@
     "composition": "^2.2.1",
     "injecting": "^2.2.0",
     "koa": "^1.1.1",
-    "routington": "^1.0.3"
+    "routington": "^1.0.3",
+    "xkit": "^1.1.1"
   },
   "directories": {
     "example": "example"
