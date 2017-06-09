@@ -2,6 +2,7 @@
 
 var injecting = require('injecting');
 var util = require('./util');
+var path = require('path');
 // Service setup!
 module.exports = function (app, extra) {
   var servicePath = extra.path;
@@ -31,7 +32,9 @@ module.exports = function (app, extra) {
     var Service = require(file);
     if (!Service) return;
 
-    const name = util.filename(file);
+    const name = path.relative(servicePath, file)
+      .replace(/\//g, '$')
+      .replace(/\.js$/, '');
     app.service[name] = Service;
     if (lcfirst(name) !== name && extra.lowerCasify) {
       app.service[lcfirst(name)] = Service;

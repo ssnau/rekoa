@@ -20,5 +20,12 @@ module.exports = [
     controller: function *(response) {
       response.render({name: 'john'}, 'greet/cat/index.hbs')
     }
+  },
+  {
+    url: '/greet/car',
+    controller: function *(response, Test$Car) {
+      this.body = Test$Car.getStatus();
+    }
   }
+
 ];
