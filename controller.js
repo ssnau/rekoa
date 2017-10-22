@@ -14,6 +14,7 @@ module.exports = function (app, extra) {
     files.forEach(function (file) {
       const absfile = require.resolve(file);
       var page = require(file);
+      page = (page && page['default']) || page;
 
       if (typeof page === 'function') page = page(app);
       if (!page || !Object.keys(page).length) return {};

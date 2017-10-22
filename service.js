@@ -30,6 +30,7 @@ module.exports = function (app, extra) {
 
   function loadService(file) {
     var Service = require(file);
+    Service = (Service && Service['default']) || Service;
     if (!Service) return;
 
     const name = path.relative(servicePath, file)

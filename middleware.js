@@ -7,6 +7,11 @@ var util = require('./util');
 var path = require('path');
 var compose = require('composition');
 
+function r(p) {
+  var x = require(p);
+  return (x && x['default']) || x;
+}
+
 function flatten(array) {
    return array.reduce((acc, arr) => {
      return acc.concat(Array.isArray(arr) ? flatten(arr) : arr);
@@ -18,8 +23,8 @@ module.exports = function (app, extra) {
 
   function getOrder() {
     var c1, c2;
-    util.safe(() => c1 = require(path.join(middlewarePath, '_order.js')));
-    util.safe(() => c2 = require(path.join(middlewarePath, '$order.js')));
+    util.safe(() => c1 = r(path.join(middlewarePath, '_order.js')));
+    util.safe(() => c2 = r(path.join(middlewarePath, '$order.js')));
     return c1 || c2 || [];
   }
 
@@ -43,7 +48,7 @@ module.exports = function (app, extra) {
     console.log('loading middlewares:', wears.join(', '));
 
     wears = wears.map(function (name) {
-      return require(path.join(middlewarePath, name));
+      return r(path.join(middlewarePath, name));
     }).filter(Boolean);
 
     // flat and filter
