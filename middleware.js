@@ -5,7 +5,7 @@
 
 var util = require('./util');
 var path = require('path');
-var compose = require('composition');
+var compose = require('koa-compose');
 
 function r(p) {
   var x = require(p);
@@ -28,7 +28,7 @@ module.exports = function (app, extra) {
     return c1 || c2 || [];
   }
 
-  var mws = function *(next) { yield next};
+  var mws = async function (context, next) { await next(); };
   function initMws(files) {
     var middlewareOrder = getOrder() || [];
     console.log('order is', middlewareOrder);
@@ -56,8 +56,8 @@ module.exports = function (app, extra) {
     mws = compose(wears);
   }
 
-  app.use(function *(next) {
-    yield mws.call(this, next);
+  app.use(async function (context, next) {
+    await mws.call(context, context, next);
   });
 
   return {

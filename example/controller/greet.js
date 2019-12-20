@@ -1,9 +1,9 @@
 module.exports = [
   {
     url: '/',
-    controller: function* (response) {
+    controller: async function (response, context) {
       response.json({
-        message: "hello, i am index"
+        message: `hello ${context.firstName}, i am index`
       });
     }
   },

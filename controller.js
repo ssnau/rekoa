@@ -3,7 +3,7 @@
  **/
 var path = require("path");
 var fs = require("fs");
-var compose = require("composition");
+var compose = require("koa-compose");
 
 module.exports = function (app, extra) {
   var router = null;
@@ -34,7 +34,7 @@ module.exports = function (app, extra) {
     pages.forEach(function (page) {
       if (!(page && page.controller)) return;
 
-      var responseController = routeController(app, page);
+      var responseController = routeController(page);
       var url = page.url.indexOf('/') !== '0' ? '/' + url: '';
       router.define(page.url).forEach(node => {
         node.controllers = [].concat(node.controllers).concat([{
@@ -46,43 +46,42 @@ module.exports = function (app, extra) {
     });
   }
 
-  app.use(function * (next) {
-    var match = router.match(this.path);
+  app.use(async function (context, next) {
+    var match = router.match(context.path);
     var controllers = match && match.node && match.node.controllers;
     if (!controllers) {
-      this.body = 'no route found';
-      this.status = 404;
+      context.body = 'no route found';
+      context.status = 404;
       return;
     }
     var controller;
     for (var i = 0; i < controllers.length; i++) {
       var methods = controllers[i].methods;
-      if (methods.indexOf(this.method) > -1) {
+      if (methods.indexOf(context.method) > -1) {
         controller = controllers[i];
         break;
       }
     }
     if (!controller) {
-      this.body = 'no supported controller found';
-      this.status = 404;
+      context.body = 'no supported controller found';
+      context.status = 404;
       return;
     }
-    this.matchRoute = match.node;
-    this.params = match.param;
-    yield controller.fn.call(this, next);
+    context.matchRoute = match.node;
+    context.params = match.param;
+    await controller.fn.call(context, context, next);
   });
 
-  function routeController(app, page) {
+  function routeController(page) {
     var middlewares = page.middlewares || [];
 
     if (page.middlewares) {
       // in case middlewares is not array
       return compose([].concat(middlewares, responseController));
     }
-    this.matchRoute = page;
 
-    function* responseController(next) {
-      yield this.$injector.invoke(page.controller, this);
+    async function responseController(context, next) {
+      await context.$injector.invoke(page.controller, context);
     }
 
     return responseController;
@@ -90,7 +89,7 @@ module.exports = function (app, extra) {
 
   return {
     filter: /js$/,
-    setup: loadRoute, 
+    setup: loadRoute,
     fullReload: true,
     name: 'controller'
   };

@@ -4,7 +4,7 @@
   "description": "a simple web framework based on koa.",
   "main": "index.js",
   "engines": {
-    "node": ">=0.12.0"
+    "node": ">=10.10.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,9 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "composition": "^2.2.1",
     "injecting": "^2.2.0",
-    "koa": "^1.1.1",
+    "koa": "^2.11.0",
+    "koa-compose": "^4.1.0",
     "routington": "^1.0.3",
     "xkit": "^1.1.1"
   },
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "fs-promise": "^0.3.1",
-    "handlebars": "^4.0.3"
+    "handlebars": "^4.5.3"
   },
   "repository": {
     "type": "git",

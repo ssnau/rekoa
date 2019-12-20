@@ -1,4 +1,6 @@
-module.exports = function* (next) {
-  this.name = "jack";
-  yield next;
+console.log('load teapot')
+module.exports =  async function (context, next) {
+  console.log('-----teapot----')
+  context.firstName= "jack";
+  await next();
 };

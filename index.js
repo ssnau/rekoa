@@ -2,8 +2,7 @@ var koa = require('koa');
 var util = require('./util');
 var path = require('path');
 
-var app = koa();
-app.experimental = true;
+var app = new koa();
 
 module.exports = function (config) {
   var base = config.base;
@@ -12,9 +11,9 @@ module.exports = function (config) {
   }
   var middlewares = [];
 
-  app.use(function *(next) {
-    this.config = config;
-    yield next;
+  app.use(async function (context, next) {
+    context.config = config;
+    await next();
   });
 
   if (!config.path) config.path = {};
