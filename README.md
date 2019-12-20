@@ -2,6 +2,8 @@
 
 a simple web framework based on koa.
 
+**NOTICE**: rekoa@3.x is based on koa@2.x and is not compatible with koa@1.x styled middlewares.
+
 ### features
 
 - autoload middlewares, contexts and controllers
@@ -9,9 +11,8 @@ a simple web framework based on koa.
 
 ### example
 
-```
+```javascript
 // index.js
-require('babel/register'); // use babel to transform es7 async/await
 var app = require('rekoa');
 
 app({
@@ -24,9 +25,9 @@ app({
 }).start();
 
 // middleware/teapot
-module.exports = async function (next) {
-  this.name = "jack";
-  await next;
+module.exports = async function (context, next) {
+  context.name = "jack";
+  await next();
 };
 
 // controller/greet.js
@@ -34,8 +35,8 @@ module.exports = async function (next) {
 module.exports = [
   {
     url: '/greet',
-    controller: async function () {
-      this.body = "hello, i am " + this.name;
+    controller: async function (context, next) {
+      context.body = "hello, i am " + this.name;
     }
   }
 ];
