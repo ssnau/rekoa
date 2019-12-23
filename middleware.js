@@ -56,9 +56,7 @@ module.exports = function (app, extra) {
     mws = compose(wears);
   }
 
-  app.use(async function (context, next) {
-    await mws.call(context, context, next);
-  });
+  app.use(mws);
 
   return {
     setup: initMws,
