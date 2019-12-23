@@ -73,3 +73,5 @@ module.exports = function (config) {
     use: app.use.bind(app), // the koa `use` method
   };
 };
+
+module.exports.version = require('./package.json').version;
