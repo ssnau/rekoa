@@ -88,7 +88,7 @@ module.exports = function (app, extra) {
   }
 
   return {
-    filter: /js$/,
+    filter: /[.](ts|js)$/,
     setup: loadRoute,
     fullReload: true,
     name: 'controller'

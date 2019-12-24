@@ -29,7 +29,7 @@ module.exports = function (app, extra) {
   }
 
   var mws = async function (context, next) { await next(); };
-  function initMws(files) {
+  function setup(files) {
     var middlewareOrder = getOrder() || [];
     console.log('order is', middlewareOrder);
 
@@ -56,11 +56,14 @@ module.exports = function (app, extra) {
     mws = compose(wears);
   }
 
-  app.use(mws);
+  // wrap in a function to enable hot-replacement
+  app.use(async function (context, next) {
+    return mws(context, next);
+  });
 
   return {
-    setup: initMws,
-    filter: /js$/,
+    setup,
+    filter: /[.](ts|js)$/,
     fullReload: true,
     name: 'middleware'
   };

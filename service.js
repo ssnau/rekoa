@@ -53,7 +53,7 @@ module.exports = function (app, extra) {
   }).forEach(loadService);
 
   return {
-    filter: /js$/,
+    filter: /[.](ts|js)$/,
     setup: function callback(files) {
       files.forEach(f => loadService(f));
     },

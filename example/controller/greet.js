@@ -3,7 +3,7 @@ module.exports = [
     url: '/',
     controller: async function (response, context) {
       response.json({
-        message: `hello ${context.firstName}, i am index`
+        message: `path: / hello ${context.firstName}, i am index`
       });
     }
   },
@@ -11,7 +11,7 @@ module.exports = [
     url: '/greet',
     controller: function* (response, dumb, Dumb) {
       response.json({
-        message: "hello, i am " + dumb.getName() + '$$' + Dumb.getName()
+        message: "path: /greet hello, i am " + dumb.getName() + '$$' + Dumb.getName()
       });
     }
   },
