@@ -7,7 +7,7 @@ module.exports = {
     var files = readdir(dir);
     return files.filter(x => {
       if (x.indexOf('/_') > -1) return false;
-      return /\.js/.test(x); 
+      return true;
     });
   },
   checkSyntax: () => true,
