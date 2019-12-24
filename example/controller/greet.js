@@ -26,6 +26,11 @@ module.exports = [
     controller: function *(response, Test$Car) {
       this.body = Test$Car.getStatus();
     }
+  },
+  {
+    url: ['/abc', '/acb', '/bac',  '/bca', '/cab', '/cba'],
+    controller: async function (context) {
+      context.body = 'i am abc'
+    }
   }
-
 ];

@@ -21,11 +21,14 @@ module.exports = function (app, extra) {
       if (!Array.isArray(page)) page = [page];
 
       page.forEach(function (p, i) {
-        pages.push({
-          url: p.url,
-          controller: p.controller,
-          method: [].concat(p.method || p.methods || "get").map(x => x.toUpperCase())
-        });
+        const urls = [].concat(p.url || p.urls);
+        urls.forEach(function (url) {
+          pages.push({
+            url: url,
+            controller: p.controller,
+            method: [].concat(p.method || p.methods || "get").map(x => x.toUpperCase())
+          });
+        })
       });
     });
     app.pages = pages;
@@ -35,7 +38,6 @@ module.exports = function (app, extra) {
       if (!(page && page.controller)) return;
 
       var responseController = routeController(page);
-      var url = page.url.indexOf('/') !== '0' ? '/' + url: '';
       router.define(page.url).forEach(node => {
         node.controllers = [].concat(node.controllers).concat([{
           method: page.method,
