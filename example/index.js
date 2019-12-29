@@ -3,6 +3,16 @@ var path = require('path');
 var fsp  = require('fs-promise');
 var handlebars = require('handlebars');
 
+require('@babel/register')({
+  extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  presets: [
+    require.resolve('@babel/preset-typescript'),
+  ],
+  plugins: [
+		require.resolve('@babel/plugin-transform-modules-commonjs'),
+	]
+});
+
 var app = rekoa({
   isDevelopment: true,
   base: __dirname,

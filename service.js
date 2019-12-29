@@ -33,6 +33,7 @@ module.exports = function (app, extra) {
 
     const name = path.relative(servicePath, file)
       .replace(/\//g, '$')
+      .replace(/\.ts$/, '')
       .replace(/\.js$/, '');
     app.service[name] = Service;
     if (lcfirst(name) !== name && extra.lowerCasify) {
@@ -49,7 +50,8 @@ module.exports = function (app, extra) {
 
   util.getFilesFromDir(servicePath).filter(function (x) {
     if (/spec.js/.test(x)) return false;
-    return (/js$/.test(x));
+    if (/spec.ts/.test(x)) return false;
+    return (/js$/.test(x)) || (/ts$/.test(x)) ;
   }).forEach(loadService);
 
   return {

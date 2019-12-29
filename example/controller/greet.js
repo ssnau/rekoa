@@ -1,9 +1,9 @@
 module.exports = [
   {
     url: '/',
-    controller: async function (response, context) {
+    controller: async function (response, context, today) {
       response.json({
-        message: `path: / hello ${context.firstName}, i am index`
+        message: `path: / hello ${context.firstName}, i am index, timestamp: ${today.now()}`
       });
     }
   },
