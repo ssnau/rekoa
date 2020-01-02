@@ -1,44 +1,43 @@
-var fs = require('fs');
-var path = require('path');
-var readdir = require('xkit/fs/readdir');
+var fs = require('fs')
+var path = require('path')
+var readdir = require('xkit/fs/readdir')
 
 module.exports = {
-  getFilesFromDir: function readDir(dir) {
-    var files = readdir(dir);
+  getFilesFromDir: function readDir (dir) {
+    var files = readdir(dir)
     return files.filter(x => {
-      if (x.indexOf('/_') > -1) return false;
-      return true;
-    });
+      if (x.indexOf('/_') > -1) return false
+      return true
+    })
   },
   checkSyntax: () => true,
   safe: function (fn) {
     try {
-      return fn();
+      return fn()
     } catch (e) {
-      return;
+
     }
   },
   filename: function (p) {
-    return p.replace(/\.[^/.]+$/, "").replace(/^.*\//, '');
+    return p.replace(/\.[^/.]+$/, '').replace(/^.*\//, '')
   },
   predefinedSort: function (array, order) {
     return order
-      .filter(function(x) { return array.indexOf(x) > -1 })
+      .filter(function (x) { return array.indexOf(x) > -1 })
       .concat(
-      array.filter(function (x) { return order.indexOf(x) === -1 })
-    );
+        array.filter(function (x) { return order.indexOf(x) === -1 })
+      )
   },
   watch: function (p, callback) {
-    var fs = require('fs');
-    if (!fs.existsSync(p)) return;
-    var watcher = fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
-      var f = path.join(p, filename);
-      if (/\/_/.test(f)) return; // ignore files start with _
+    if (!fs.existsSync(p)) return
+    fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
+      var f = path.join(p, filename)
+      if (/\/_/.test(f)) return // ignore files start with _
       try {
-        callback.apply(this, [].concat(f));
+        callback.apply(this, [].concat(f))
       } catch (e) {
-        console.log('watcher got error', e.stack);
+        console.log('watcher got error', e.stack)
       }
-    });
+    })
   }
-};
+}

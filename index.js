@@ -1,77 +1,104 @@
-var koa = require('koa');
-var util = require('./util');
-var path = require('path');
+var Koa = require('koa')
+var util = require('./util')
+var path = require('path')
 
-var app = new koa();
+var app = new Koa()
+var DEFAULT_FILTER = /[.](ts|js)$/
+
+function noop () {}
+function isTestFile (file) {
+  return file.indexOf('.test.') !== -1 || file.indexOf('.spec.') !== -1
+}
 
 module.exports = function (config) {
-  var base = config.base;
+  var base = config.base
   var relbase = function (p) {
-    return base ? path.relative(base, p) : p;
+    return base ? path.relative(base, p) : p
   }
-  var middlewares = [];
+  var middlewares = []
 
   app.use(async function (context, next) {
-    context.config = config;
-    await next();
-  });
+    context.config = config
+    await next()
+  })
 
-  if (!config.path) config.path = {};
+  if (!config.path) config.path = {}
 
-  function processRecipe(recipe, extra) {
-    if (!extra.path) return;
-    var recipe = new recipe(app, extra);
-    var filter = recipe.filter || /\.js$/;
-    var gf = function () { return util.getFilesFromDir(extra.path).filter(function (x) { return filter.test(x)});}
-    var files = gf();
-    if (recipe.setup) recipe.setup(files);
-    var watch = recipe.fullReload || recipe.watchCallback;
+  function processRecipe (Recipe, extra) {
+    if (!extra.path) return
+    var recipe = new Recipe(app, extra)
+    var filter = recipe.filter || DEFAULT_FILTER
+    var gf = function () {
+      return util
+        .getFilesFromDir(extra.path)
+        .filter(function (x) { return filter.test(x) })
+        .filter(function (x) { return !isTestFile(x) })
+    }
+    var files = gf()
+    if (recipe.setup) recipe.setup(files)
+    var watch = recipe.fullReload || recipe.watchCallback
     if (watch && config.isDevelopment) {
-      util.watch(extra.path, function(path) {
+      util.watch(extra.path, function (path) {
         try {
-          if (filter.test(path)) {
-            delete require.cache[path];
-            console.log('reloading file ' + relbase(path) + ' for ' + recipe.name || ' unknown recipe');
-            if (recipe.fullReload) recipe.setup(gf());
-            if (recipe.watchCallback)  recipe.watchCallback(path);
+          if (filter.test(path) && !isTestFile(path)) {
+            delete require.cache[path]
+            console.log('reloading file ' + relbase(path) + ' for ' + recipe.name || ' unknown recipe')
+            if (recipe.fullReload) recipe.setup(gf())
+            if (recipe.watchCallback) recipe.watchCallback(path)
           }
         } catch (e) {
-          console.log(e);
+          console.log(e)
         }
-      });
+      })
     };
-    if (recipe.name) console.log('recipe ' + recipe.name + ' loaded');
+    if (recipe.name) console.log('recipe ' + recipe.name + ' loaded')
   }
 
-  function start() {
-      console.time('loading recipes');
-      // bootstrap recipes
-      processRecipe(require('./service'), {path: config.path.service, lowerCasify: config.serviceLowerCasify});
-      processRecipe(require('./middleware'), {path: config.path.middleware});
-      middlewares.forEach(fn => app.use(fn));
-      processRecipe(require('./controller'), {path: config.path.controller});
-      console.timeEnd('loading recipes');
+  var server
+  function start () {
+    console.time('loading recipes')
+    // bootstrap recipes
+    processRecipe(require('./service'), { path: config.path.service, lowerCasify: config.serviceLowerCasify })
+    processRecipe(require('./middleware'), { path: config.path.middleware })
+    middlewares.forEach(fn => app.use(fn))
+    processRecipe(require('./controller'), { path: config.path.controller })
+    console.timeEnd('loading recipes')
 
-      var port = config.port || 8080;
-      console.time('start');
-      app.listen(port, function () {
-        console.timeEnd('start');
-        console.log('server listening on ', port);
-      });
+    var port = config.port || 0
+    console.time('start')
+    server = app.listen(port, function () {
+      console.timeEnd('start')
+      console.log('server listening on ', server.address().port);
+      // only for readiness detection.
+      (config.callback || noop)()
+    })
   }
 
-  function addMethod(name, fn) {
-    app[name] = fn;
+  function addMethod (name, fn) {
+    app[name] = fn
+  }
+
+  // check readiness every 100ms
+  function ready () {
+    return new Promise((resolve, reject) => {
+      function check () {
+        try { return resolve(server.address().port) } catch (e) { }
+        return setTimeout(check, 100)
+      }
+      check()
+    })
   }
 
   return {
     addMethod: addMethod,
     addMiddleware: (fn) => middlewares.push(fn),
+    getServer: () => server, // returns Node.js Server
+    ready: ready, // if ready, return the listened port
     start: start,
     util: util, // utilities
-    koa: app,  // get the koa instance
-    use: app.use.bind(app), // the koa `use` method
-  };
-};
+    koa: app, // get the koa instance
+    use: app.use.bind(app) // the koa `use` method
+  }
+}
 
-module.exports.version = require('./package.json').version;
+module.exports.version = require('./package.json').version

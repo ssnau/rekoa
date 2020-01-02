@@ -1,5 +1,5 @@
 module.exports = class Dumb {
-  getName() {
-    return 'dumb';
+  getName () {
+    return 'dumb'
   }
 }
