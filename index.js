@@ -64,7 +64,11 @@ module.exports = function (config) {
     processRecipe(require('./controller'), { path: config.path.controller })
     console.timeEnd('loading recipes')
 
-    var port = config.port || 0
+    var port = (config.port || 0) - 0
+    // reason to support port < 0 is that app developer
+    // can override port with -1 to get an abitrary port
+    // when they run tests.
+    if (port < 0) port = 0
     console.time('start')
     server = app.listen(port, function () {
       console.timeEnd('start')
