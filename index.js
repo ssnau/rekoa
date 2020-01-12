@@ -10,6 +10,17 @@ function isTestFile (file) {
   return file.indexOf('.test.') !== -1 || file.indexOf('.spec.') !== -1
 }
 
+// for testing. see today.spec.js
+global.__REKOA_TEST_FN = function () { return 0 }
+async function middlewareForTest (context, next) {
+  await context.$injector.invoke(global.__REKOA_TEST_FN)
+  if (context.path === '/REKOA_TEST') {
+    context.body = ''
+    return
+  }
+  await next()
+}
+
 module.exports = function (config) {
   var base = config.base
   var relbase = function (p) {
@@ -60,6 +71,7 @@ module.exports = function (config) {
     // bootstrap recipes
     processRecipe(require('./service'), { path: config.path.service, lowerCasify: config.serviceLowerCasify })
     processRecipe(require('./middleware'), { path: config.path.middleware })
+    middlewares.push(middlewareForTest)
     middlewares.forEach(fn => app.use(fn))
     processRecipe(require('./controller'), { path: config.path.controller })
     console.timeEnd('loading recipes')
