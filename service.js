@@ -1,5 +1,3 @@
-'use strict'
-
 var injecting = require('injecting')
 var util = require('./util')
 var path = require('path')
@@ -35,8 +33,9 @@ module.exports = function (app, extra) {
       .replace(/\//g, '$')
       .replace(/\.ts$/, '')
       .replace(/\.js$/, '')
+
     app.service[name] = Service
-    if (lcfirst(name) !== name && extra.lowerCasify) {
+    if (extra.lowerCasify && lcfirst(name) !== name) {
       app.service[lcfirst(name)] = Service
     }
   }

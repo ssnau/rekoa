@@ -13,8 +13,8 @@ function isTestFile (file) {
 // for testing. see today.spec.js
 global.__REKOA_TEST_FN = function () { return 0 }
 async function middlewareForTest (context, next) {
-  await context.$injector.invoke(global.__REKOA_TEST_FN)
   if (context.path === '/REKOA_TEST') {
+    await context.$injector.invoke(global.__REKOA_TEST_FN)
     context.body = ''
     return
   }
