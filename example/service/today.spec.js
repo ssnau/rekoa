@@ -20,4 +20,10 @@ describe('today', function () {
       assert.strictEqual(today.hi(), 'good')
     })
   })
+
+  it('call today car', async function () {
+    await run(async (today) => {
+      assert.strictEqual(today.carStatus(), 'dumb is in the car')
+    })
+  })
 })

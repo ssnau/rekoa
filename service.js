@@ -29,15 +29,18 @@ module.exports = function (app, extra) {
     Service = (Service && Service.default) || Service
     if (!Service) return
 
-    const name = path.relative(servicePath, file)
-      .replace(/\//g, '$')
+    const serviceName = path.relative(servicePath, file)
       .replace(/\.ts$/, '')
       .replace(/\.js$/, '')
-
-    app.service[name] = Service
-    if (extra.lowerCasify && lcfirst(name) !== name) {
-      app.service[lcfirst(name)] = Service
+    const dollarName = serviceName.replace(/\//g, '$')
+    function register (name) {
+      app.service[name] = Service
+      if (extra.lowerCasify && lcfirst(name) !== name) {
+        app.service[lcfirst(name)] = Service
+      }
     }
+    register(serviceName)
+    register(dollarName)
   }
 
   app.use(async function (context, next) {
