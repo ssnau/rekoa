@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "injecting": "^2.7.0",
+    "injecting": "^2.8.0",
     "koa": "^2.11.0",
     "koa-compose": "^4.1.0",
     "routington": "^1.0.3",

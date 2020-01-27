@@ -9,6 +9,7 @@ module.exports = function (app, extra) {
     var injector = injecting()
     context.$injector = injector
     context._use_data_injection = true
+    context._get = injector.get.bind(injector);
 
     injector.register('context', context)
     injector.register('app', context.app)
