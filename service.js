@@ -9,7 +9,11 @@ module.exports = function (app, extra) {
     var injector = injecting()
     context.$injector = injector
     context._use_data_injection = true
-    context._get = injector.get.bind(injector);
+    context.getInjection = function (name) {
+      // if 'name' is a Class
+      if (name.INJECTING_NAME) return injector.get(name.INJECTING_NAME)
+      return injector.get(name)
+    }
 
     injector.register('context', context)
     injector.register('app', context.app)
@@ -35,6 +39,7 @@ module.exports = function (app, extra) {
       .replace(/\.js$/, '')
     const dollarName = serviceName.replace(/\//g, '$')
     function register (name) {
+      if (!name) return
       app.service[name] = Service
       if (extra.lowerCasify && lcfirst(name) !== name) {
         app.service[lcfirst(name)] = Service
@@ -42,6 +47,10 @@ module.exports = function (app, extra) {
     }
     register(serviceName)
     register(dollarName)
+    if (!Service.INJECTING_NAME) {
+      util.assignProperty(Service, 'INJECTING_NAME', serviceName)
+    }
+    register(Service.INJECTING_NAME)
   }
 
   app.use(async function (context, next) {

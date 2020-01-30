@@ -21,6 +21,17 @@ module.exports = {
   filename: function (p) {
     return p.replace(/\.[^/.]+$/, '').replace(/^.*\//, '')
   },
+  assignProperty (obj, name, value) {
+    try {
+      Object.defineProperty(obj, name, {
+        value: value,
+        enumerable: false,
+        configurable: true
+      })
+    } catch (e) {
+    // do nothing
+    }
+  },
   predefinedSort: function (array, order) {
     return order
       .filter(function (x) { return array.indexOf(x) > -1 })

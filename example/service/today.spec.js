@@ -26,4 +26,12 @@ describe('today', function () {
       assert.strictEqual(today.carStatus(), 'dumb is in the car')
     })
   })
+
+  it('call today car with Today class', async function () {
+    await run(async (context) => {
+      const Today = require('./today').default
+      const today = await context.getInjection(Today)
+      assert.strictEqual(today.carStatus(), 'dumb is in the car')
+    })
+  })
 })
