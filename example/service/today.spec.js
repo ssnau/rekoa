@@ -32,6 +32,8 @@ describe('today', function () {
       const Today = require('./today').default
       const today = await context.getInjection(Today)
       assert.strictEqual(today.carStatus(), 'dumb is in the car')
+      assert.strictEqual(today.car2Status(), 'dumb is in the car')
+      assert.strictEqual(today.car, today.car2)
     })
   })
 })

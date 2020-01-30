@@ -11,8 +11,12 @@ export default class Today {
   carStatus() {
     return this.car.getStatus();
   }
+  car2Status() {
+    return this.car2.getStatus();
+  }
 }
 
 Today.INJECTIONS = {
-  car: 'Test/Car'
+  car: 'Test/Car',
+  car2: Car
 }
