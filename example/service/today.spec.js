@@ -37,16 +37,15 @@ describe('today', function () {
     })
   })
 
-  /*
   it('call today car with Today class with getInjection#map', async function () {
     await run(async (context) => {
       const Today = require('./today').default
-      const Response = require('./response').default
+      const Response = require('./response')
       const { today, response } = await context.getInjection({ today: Today, response: Response })
+      assert.ok(response.render)
       assert.strictEqual(today.carStatus(), 'dumb is in the car')
       assert.strictEqual(today.car2Status(), 'dumb is in the car')
       assert.strictEqual(today.car, today.car2)
     })
   })
-  */
 })
