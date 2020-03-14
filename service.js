@@ -11,8 +11,23 @@ module.exports = function (app, extra) {
     context._use_data_injection = true
     context.getInjection = function (name) {
       // if 'name' is a Class
+      debugger;
       if (name.INJECTING_NAME) return injector.get(name.INJECTING_NAME)
-      return injector.get(name)
+      if (typeof name === 'string') return injector.get(name)
+
+      if (Array.isArray(name)) throw new Error('not support array for getInjection')
+      const map = name;
+      const keys = Object.keys(map);
+      const result = {};
+      return Promise
+        .all(keys.map(n => context.getInjection(map[n])))
+        .then(values => {
+          debugger;
+          keys.forEach((n, i) => {
+            result[n] = values[i];
+          });
+          return result;
+        })
     }
 
     injector.register('context', context)
@@ -51,6 +66,7 @@ module.exports = function (app, extra) {
       util.assignProperty(Service, 'INJECTING_NAME', serviceName)
     }
     register(Service.INJECTING_NAME)
+    debugger;
   }
 
   app.use(async function (context, next) {
