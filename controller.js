@@ -46,11 +46,13 @@ module.exports = function (app, extra) {
   }
 
   app.use(async function (context, next) {
+    var endTime = context.startTime('routing')
     var match = router.match(context.path)
     var controllers = match && match.node && match.node.controllers
     if (!controllers) {
       context.body = 'no route found'
       context.status = 404
+      endTime()
       return
     }
     var controller
@@ -64,10 +66,12 @@ module.exports = function (app, extra) {
     if (!controller) {
       context.body = 'no supported controller found'
       context.status = 404
+      endTime()
       return
     }
     context.matchRoute = match.node
     context.params = match.param
+    endTime()
     await controller.fn.call(context, context, next)
   })
 

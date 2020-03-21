@@ -65,8 +65,10 @@ module.exports = function (app, extra) {
   }
 
   app.use(async function (context, next) {
-    Object.keys(app.service).forEach(function (key) {
-      return context.$injector.register(key, app.service[key])
+    context.timing('loadservice', () => {
+      Object.keys(app.service).forEach(function (key) {
+        return context.$injector.register(key, app.service[key])
+      })
     })
     await next()
   })

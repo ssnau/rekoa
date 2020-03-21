@@ -34,8 +34,18 @@ module.exports = function (config) {
     context.startTime = function (name, desc) {
       const start = Date.now()
       return () => {
-        serverTimings.push({ name, desc, ms: Date.now() - start })
+        serverTimings.push({ name, desc: desc || name, ms: Date.now() - start })
       }
+    }
+    context.timing = function (name, desc, fn) {
+      if (typeof desc === 'function') {
+        fn = desc
+        desc = null
+      }
+      const end = context.startTime(name, desc)
+      const result = fn()
+      Promise.resolve(result).then(end)
+      return result
     }
     context.config = config
     await next()
