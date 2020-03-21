@@ -2,6 +2,10 @@ module.exports = [
   {
     url: '/',
     controller: async function (response, context, today) {
+      const end = context.startTime('index', 'index')
+      await sleep(100)
+      end()
+      console.log(context.serverTimings)
       response.json({
         message: `path: / hello ${context.firstName}, i am index, timestamp: ${today.now()}`
       })
@@ -34,3 +38,9 @@ module.exports = [
     }
   }
 ]
+
+function sleep (ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms)
+  })
+}

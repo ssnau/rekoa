@@ -29,6 +29,14 @@ module.exports = function (config) {
   var middlewares = []
 
   app.use(async function (context, next) {
+    const serverTimings = context.serverTimings || []
+    context.serverTimings = serverTimings
+    context.startTime = function (name, desc) {
+      const start = Date.now()
+      return () => {
+        serverTimings.push({ name, desc, ms: Date.now() - start })
+      }
+    }
     context.config = config
     await next()
   })
