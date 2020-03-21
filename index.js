@@ -1,6 +1,7 @@
 var Koa = require('koa')
 var util = require('./util')
 var path = require('path')
+var now = require('performance-now')
 
 var app = new Koa()
 var DEFAULT_FILTER = /[.](ts|js)$/
@@ -32,9 +33,9 @@ module.exports = function (config) {
     const serverTimings = context.serverTimings || []
     context.serverTimings = serverTimings
     context.startTime = function (name, desc) {
-      const start = Date.now()
+      const start = now()
       return () => {
-        serverTimings.push({ name, desc: desc || name, ms: Date.now() - start })
+        serverTimings.push({ name, desc: desc || name, ms: now() - start })
       }
     }
     context.timing = function (name, desc, fn) {
