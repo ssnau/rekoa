@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var readdir = require('xkit/fs/readdir')
 
+const watchCallbackMap = {};
 module.exports = {
   getFilesFromDir: function readDir (dir) {
     var files = readdir(dir)
@@ -41,6 +42,7 @@ module.exports = {
   },
   watch: function (p, callback) {
     if (!fs.existsSync(p)) return
+    watchCallbackMap[p] = callback;
     fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
       var f = path.join(p, filename)
       if (/\/_/.test(f)) return // ignore files start with _
@@ -50,5 +52,10 @@ module.exports = {
         console.log('watcher got error', e.stack)
       }
     })
+  },
+  trigger: function (absfile) {
+    Object.keys(watchCallbackMap).forEach(function (basePath) {
+      if (absfile.indexOf(basePath) === 0) watchCallbackMap[basePath](absfile);
+    });
   }
 }

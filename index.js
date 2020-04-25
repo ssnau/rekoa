@@ -23,6 +23,9 @@ async function middlewareForTest (context, next) {
 }
 
 module.exports = function (config) {
+  if (config.isDevelopment) {
+    global.__REKOA_IS_DEV = true;
+  }
   var base = config.base
   var relbase = function (p) {
     return base ? path.relative(base, p) : p
@@ -127,12 +130,13 @@ module.exports = function (config) {
   return {
     addMethod: addMethod,
     addMiddleware: (fn) => middlewares.push(fn),
+    triggerWatch: util.trigger, // dev only
     getServer: () => server, // returns Node.js Server
     ready: ready, // if ready, return the listened port
     start: start,
     util: util, // utilities
     koa: app, // get the koa instance
-    use: app.use.bind(app) // the koa `use` method
+    use: app.use.bind(app), // the koa `use` method
   }
 }
 
