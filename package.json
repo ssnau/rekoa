@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "injecting": "^2.8.1",
+    "injecting": "^2.8.2",
     "koa": "^2.11.0",
     "koa-compose": "^4.1.0",
     "performance-now": "^2.1.0",
