@@ -1,6 +1,11 @@
 var injecting = require('injecting')
 var util = require('./util')
 var path = require('path')
+
+function getOwn(obj, prop) {
+  if (obj.hasOwnProperty(prop)) return obj[prop];
+  return undefined;
+}
 // Service setup!
 module.exports = function (app, extra) {
   var servicePath = extra.path
@@ -11,7 +16,7 @@ module.exports = function (app, extra) {
     context._use_data_injection = true
     context.getInjection = function (name) {
       // if 'name' is a Class
-      if (name.INJECTING_NAME) return injector.get(name.INJECTING_NAME)
+      if (getOwn(name,'INJECTING_NAME')) return injector.get(getOwn(name,'INJECTING_NAME'))
       if (typeof name === 'string') return injector.get(name)
 
       if (Array.isArray(name)) throw new Error('not support array for getInjection')
@@ -58,10 +63,10 @@ module.exports = function (app, extra) {
     }
     register(serviceName)
     register(dollarName)
-    if (!Service.INJECTING_NAME) {
+    if (!getOwn(Service,'INJECTING_NAME')) {
       util.assignProperty(Service, 'INJECTING_NAME', serviceName)
     }
-    register(Service.INJECTING_NAME)
+    register(getOwn(Service,'INJECTING_NAME'))
   }
 
   app.use(async function (context, next) {
