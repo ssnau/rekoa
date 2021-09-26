@@ -31,6 +31,11 @@ module.exports = function (app, extra) {
         })
     }
 
+    context.getInjections = function (names) {
+      if (!Array.isArray(names)) throw new Error('must pass array into getInjections')
+      return Promise.all(names.map(n => context.getInjection(n)));
+    }
+
     injector.register('context', context)
     injector.register('app', context.app)
     if (context.pendingInjections) {

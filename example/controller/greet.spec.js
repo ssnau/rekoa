@@ -18,4 +18,11 @@ describe('hooks', function () {
     const response = await axios.get(`http://localhost:${port}/greet/car`)
     assert.strictEqual(response.data, 'dumb is in the car')
   })
+
+  it('request /getinjections', async function () {
+    const response = await axios.get(`http://localhost:${port}/getinjections`)
+    assert.strictEqual(response.data, 'dumb/good')
+  })
+
+
 })

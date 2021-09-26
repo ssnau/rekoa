@@ -1,3 +1,5 @@
+import Dumb from '../service/Dumb';
+import Today  from '../service/today';
 module.exports = [
   {
     url: '/',
@@ -36,7 +38,15 @@ module.exports = [
     controller: async function (context) {
       context.body = 'i am abc'
     }
-  }
+  },
+  {
+    url: ['/getinjections'],
+    controller: async function (context) {
+      const [dumb, today] = await context.getInjections([Dumb, Today]);
+      context.body = dumb.getName() + '/' + today.hi();
+    }
+  },
+
 ]
 
 function sleep (ms) {
