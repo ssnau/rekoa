@@ -24,5 +24,10 @@ describe('hooks', function () {
     assert.strictEqual(response.data, 'dumb/good')
   })
 
+  it('request /man', async function () {
+    const response = await axios.get(`http://localhost:${port}/man`)
+    assert.strictEqual(response.data, 'good')
+  })
+
 
 })
