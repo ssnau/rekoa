@@ -1,6 +1,7 @@
 var fs = require('fs')
 var path = require('path')
 var readdir = require('xkit/fs/readdir')
+const chokidar = require('chokidar');
 
 const watchCallbackMap = {};
 module.exports = {
@@ -43,15 +44,14 @@ module.exports = {
   watch: function (p, callback) {
     if (!fs.existsSync(p)) return
     watchCallbackMap[p] = callback;
-    fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
-      var f = path.join(p, filename)
+    chokidar.watch(p).on('all', (event, f) => {
       if (/\/_/.test(f)) return // ignore files start with _
       try {
         callback.apply(this, [].concat(f))
       } catch (e) {
         console.log('watcher got error', e.stack)
       }
-    })
+    });
   },
   trigger: function (absfile) {
     Object.keys(watchCallbackMap).forEach(function (basePath) {
