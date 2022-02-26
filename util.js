@@ -1,11 +1,11 @@
 var fs = require('fs')
 var path = require('path')
 var readdir = require('xkit/fs/readdir')
-var os = require('os');
+var os = require('os')
 const isLinux = /linux/.test(os.platform())
-const chokidar = require('chokidar');
+const chokidar = require('chokidar')
 
-const watchCallbackMap = {};
+const watchCallbackMap = {}
 module.exports = {
   getFilesFromDir: function readDir (dir) {
     var files = readdir(dir)
@@ -45,8 +45,8 @@ module.exports = {
   },
   watch: function (p, callback) {
     if (!fs.existsSync(p)) return
-    watchCallbackMap[p] = callback;
-    function handle(f) {
+    watchCallbackMap[p] = callback
+    function handle (f) {
       if (/\/_/.test(f)) return // ignore files start with _
       try {
         callback.apply(this, [].concat(f))
@@ -55,23 +55,23 @@ module.exports = {
       }
     }
     if (isLinux) {
-      chokidar.watch(p, {persistent: true, usePolling: true}).on('all', (event, f) => {
+      chokidar.watch(p, { persistent: true, usePolling: true }).on('all', (event, f) => {
         // `add` and `addDir` are misleading. They are emitted every time when the app starts.
         // so I have to disable them. I won't bring any problem since any file newly added will
         // be changed in follow-up operations.
-        if (/add/.test(event)) return; 
-        handle(f);
-      });
-      return;
+        if (/add/.test(event)) return
+        handle(f)
+      })
+      return
     }
 
     fs.watch(p, { persistent: true, recursive: true }, function (evt, filename) {
-      handle(path.join(p, filename));
-    });
+      handle(path.join(p, filename))
+    })
   },
   trigger: function (absfile) {
     Object.keys(watchCallbackMap).forEach(function (basePath) {
-      if (absfile.indexOf(basePath) === 0) watchCallbackMap[basePath](absfile);
-    });
+      if (absfile.indexOf(basePath) === 0) watchCallbackMap[basePath](absfile)
+    })
   }
 }

@@ -1,6 +1,6 @@
-import Dumb from '../service/Dumb';
-import Today  from '../service/today';
-import Man  from '../service/man';
+import Dumb from '../service/Dumb'
+import Today from '../service/today'
+import Man from '../service/man'
 module.exports = [
   {
     url: '/',
@@ -43,17 +43,17 @@ module.exports = [
   {
     url: ['/getinjections'],
     controller: async function (context) {
-      const [dumb, today] = await context.getInjections([Dumb, Today]);
-      context.body = dumb.getName() + '/' + today.hi();
+      const [dumb, today] = await context.getInjections([Dumb, Today])
+      context.body = dumb.getName() + '/' + today.hi()
     }
   },
   {
     url: ['/man'],
     controller: async function (context) {
-      const [ man ] = await context.getInjections([Man]);
-      context.body = man.today.hi();
+      const [man] = await context.getInjections([Man])
+      context.body = man.today.hi()
     }
-  },
+  }
 
 ]
 

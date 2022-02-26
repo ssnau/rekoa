@@ -24,7 +24,7 @@ async function middlewareForTest (context, next) {
 
 module.exports = function (config) {
   if (config.isDevelopment) {
-    global.__REKOA_IS_DEV = true;
+    global.__REKOA_IS_DEV = true
   }
   var base = config.base
   var relbase = function (p) {
@@ -136,7 +136,7 @@ module.exports = function (config) {
     start: start,
     util: util, // utilities
     koa: app, // get the koa instance
-    use: app.use.bind(app), // the koa `use` method
+    use: app.use.bind(app) // the koa `use` method
   }
 }
 

@@ -35,7 +35,7 @@ module.exports = function (app, extra) {
 
     // read dir
     var wears = files.filter(function (x) {
-      return (/js$/.test(x))
+      return (/(js|ts)$/.test(x))
     }).map(function (name) {
       return util.filename(name)
     }).filter(Boolean).filter(function (name) {
