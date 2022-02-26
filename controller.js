@@ -1,16 +1,16 @@
 /**
  * 作用：支持热替换的路由模块。
  **/
-var compose = require('koa-compose')
+const compose = require('koa-compose')
 
 module.exports = function (app, extra) {
-  var router = null
+  let router = null
   function loadRoute (files) {
     router = require('routington')()
     // boot on startup
-    var pages = []
+    const pages = []
     files.forEach(function (file) {
-      var page = require(file)
+      let page = require(file)
       page = (page && page.default) || page
 
       if (typeof page === 'function') page = page(app)
@@ -34,7 +34,7 @@ module.exports = function (app, extra) {
     pages.forEach(function (page) {
       if (!(page && page.controller)) return
 
-      var responseController = routeController(page)
+      const responseController = routeController(page)
       router.define(page.url).forEach(node => {
         node.controllers = [].concat(node.controllers).concat([{
           method: page.method,
@@ -46,18 +46,18 @@ module.exports = function (app, extra) {
   }
 
   app.use(async function (context, next) {
-    var endTime = context.startTime('routing')
-    var match = router.match(context.path)
-    var controllers = match && match.node && match.node.controllers
+    const endTime = context.startTime('routing')
+    const match = router.match(context.path)
+    const controllers = match && match.node && match.node.controllers
     if (!controllers) {
       context.body = 'no route found'
       context.status = 404
       endTime()
       return
     }
-    var controller
-    for (var i = 0; i < controllers.length; i++) {
-      var methods = controllers[i].methods
+    let controller
+    for (let i = 0; i < controllers.length; i++) {
+      const methods = controllers[i].methods
       if (methods.indexOf(context.method) > -1) {
         controller = controllers[i]
         break
@@ -76,7 +76,7 @@ module.exports = function (app, extra) {
   })
 
   function routeController (page) {
-    var middlewares = page.middlewares || []
+    const middlewares = page.middlewares || []
 
     if (page.middlewares) {
       // in case middlewares is not array

@@ -4,7 +4,7 @@ const axios = require('axios')
 const assert = require('assert')
 
 describe('today', function () {
-  var port
+  let port
   beforeEach(async () => {
     port = await app.ready()
     global.__REKOA_TEST_FN = function () { return 0 }
@@ -12,7 +12,7 @@ describe('today', function () {
 
   async function run (fn) {
     global.__REKOA_TEST_FN = fn
-    await axios.get(`http://localhost:${port}/REKOA_TEST`)
+    await axios.get(`http://localhost:${port}/REKOA_TEST`, { proxy: false })
   }
 
   it('call today hi', async function () {

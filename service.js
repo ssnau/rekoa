@@ -1,6 +1,6 @@
-var injecting = require('injecting')
-var util = require('./util')
-var path = require('path')
+const injecting = require('injecting')
+const util = require('./util')
+const path = require('path')
 
 function getOwn (obj, prop) {
   if (Object.prototype.hasOwnProperty.call(obj, prop)) return obj[prop]
@@ -8,10 +8,10 @@ function getOwn (obj, prop) {
 }
 // Service setup!
 module.exports = function (app, extra) {
-  var servicePath = extra.path
+  const servicePath = extra.path
   // Data Injection setup!
   app.use(async function (context, next) {
-    var injector = injecting()
+    const injector = injecting()
     context.$injector = injector
     context._use_data_injection = true
     context.getInjection = function (name) {
@@ -51,7 +51,7 @@ module.exports = function (app, extra) {
   if (!servicePath) return
 
   function loadService (file) {
-    var Service = require(file)
+    let Service = require(file)
     Service = (Service && Service.default) || Service
     if (!Service) return
 
@@ -106,7 +106,7 @@ function lcfirst (str) {
   //   example 1: lcfirst('Kevin Van Zonneveld')
   //   returns 1: 'kevin Van Zonneveld'
   str += ''
-  var f = str.charAt(0)
+  const f = str.charAt(0)
     .toLowerCase()
   return f + str.substr(1)
 }

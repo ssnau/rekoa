@@ -1,17 +1,17 @@
-var path = require('path')
-var fs = require('fs')
-var handlebars = require('handlebars')
+const path = require('path')
+const fs = require('fs')
+const handlebars = require('handlebars')
 
-var cache = {}
+let cache = {}
 module.exports = function (context) {
-  var config = context.config
+  const config = context.config
   return {
     render: function _render (data, tpl) {
-      var p = path.join(config.templateBase, tpl)
+      const p = path.join(config.templateBase, tpl)
       if (config.isDebug) cache = {}
-      var template = cache[p]
+      let template = cache[p]
       if (!template) {
-        var tsrc = cache[p] || fs.readFileSync(p, 'utf8')
+        const tsrc = cache[p] || fs.readFileSync(p, 'utf8')
         template = handlebars.compile(tsrc)
         cache[p] = template
       }

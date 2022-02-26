@@ -1,14 +1,14 @@
-var fs = require('fs')
-var path = require('path')
-var readdir = require('xkit/fs/readdir')
-var os = require('os')
+const fs = require('fs')
+const path = require('path')
+const readdir = require('xkit/fs/readdir')
+const os = require('os')
 const isLinux = /linux/.test(os.platform())
 const chokidar = require('chokidar')
 
 const watchCallbackMap = {}
 module.exports = {
   getFilesFromDir: function readDir (dir) {
-    var files = readdir(dir)
+    const files = readdir(dir)
     return files.filter(x => {
       if (x.indexOf('/_') > -1) return false
       return true

@@ -1,10 +1,10 @@
-var Koa = require('koa')
-var util = require('./util')
-var path = require('path')
-var now = require('performance-now')
+const Koa = require('koa')
+const util = require('./util')
+const path = require('path')
+const now = require('performance-now')
 
-var app = new Koa()
-var DEFAULT_FILTER = /[.](ts|js)$/
+const app = new Koa()
+const DEFAULT_FILTER = /[.](ts|js)$/
 
 function noop () {}
 function isTestFile (file) {
@@ -26,11 +26,11 @@ module.exports = function (config) {
   if (config.isDevelopment) {
     global.__REKOA_IS_DEV = true
   }
-  var base = config.base
-  var relbase = function (p) {
+  const base = config.base
+  const relbase = function (p) {
     return base ? path.relative(base, p) : p
   }
-  var middlewares = []
+  const middlewares = []
 
   app.use(async function (context, next) {
     const serverTimings = context.serverTimings || []
@@ -59,17 +59,17 @@ module.exports = function (config) {
 
   function processRecipe (Recipe, extra) {
     if (!extra.path) return
-    var recipe = new Recipe(app, extra)
-    var filter = recipe.filter || DEFAULT_FILTER
-    var gf = function () {
+    const recipe = new Recipe(app, extra)
+    const filter = recipe.filter || DEFAULT_FILTER
+    const gf = function () {
       return util
         .getFilesFromDir(extra.path)
         .filter(function (x) { return filter.test(x) })
         .filter(function (x) { return !isTestFile(x) })
     }
-    var files = gf()
+    const files = gf()
     if (recipe.setup) recipe.setup(files)
-    var watch = recipe.fullReload || recipe.watchCallback
+    const watch = recipe.fullReload || recipe.watchCallback
     if (watch && config.isDevelopment) {
       util.watch(extra.path, function (path) {
         try {
@@ -87,7 +87,7 @@ module.exports = function (config) {
     if (recipe.name) console.log('recipe ' + recipe.name + ' loaded')
   }
 
-  var server
+  let server
   function start () {
     console.time('loading recipes')
     // bootstrap recipes
@@ -98,7 +98,7 @@ module.exports = function (config) {
     processRecipe(require('./controller'), { path: config.path.controller })
     console.timeEnd('loading recipes')
 
-    var port = (config.port || 0) - 0
+    let port = (config.port || 0) - 0
     // reason to support port < 0 is that app developer
     // can override port with -1 to get an abitrary port
     // when they run tests.

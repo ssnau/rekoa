@@ -3,12 +3,12 @@
  * @type {exports|module.exports}
  */
 
-var util = require('./util')
-var path = require('path')
-var compose = require('koa-compose')
+const util = require('./util')
+const path = require('path')
+const compose = require('koa-compose')
 
 function r (p) {
-  var x = require(p)
+  const x = require(p)
   return (x && x.default) || x
 }
 
@@ -19,22 +19,22 @@ function flatten (array) {
 }
 
 module.exports = function (app, extra) {
-  var middlewarePath = extra.path
+  const middlewarePath = extra.path
 
   function getOrder () {
-    var c1, c2
+    let c1, c2
     util.safe(() => { c1 = r(path.join(middlewarePath, '_order.js')) })
     util.safe(() => { c2 = r(path.join(middlewarePath, '$order.js')) })
     return c1 || c2 || []
   }
 
-  var mws = async function (context, next) { await next() }
+  let mws = async function (context, next) { await next() }
   function setup (files) {
-    var middlewareOrder = getOrder() || []
+    const middlewareOrder = getOrder() || []
     console.log('order is', middlewareOrder)
 
     // read dir
-    var wears = files.filter(function (x) {
+    let wears = files.filter(function (x) {
       return (/(js|ts)$/.test(x))
     }).map(function (name) {
       return util.filename(name)

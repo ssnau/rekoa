@@ -1,5 +1,5 @@
-var rekoa = require('../')
-var path = require('path')
+const rekoa = require('../')
+const path = require('path')
 
 require('@babel/register')({
   extensions: ['.js', '.jsx', '.ts', '.tsx'],
